@@ -1,0 +1,143 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+import seaborn as sns
+
+def calculate_site_energies(filename, bins=15, save_filename=None):
+    # Load data
+    t, e1, e2 = np.loadtxt(filename, usecols=(0, 1, 3), unpack=True)
+    
+    # Plot smooth kernel density curves
+    plt.figure(figsize=(5, 3))  # Set the figure size here
+    sns.kdeplot(e1, color='blue', fill=True)
+    sns.kdeplot(e2, color='yellow', fill=True)
+    plt.xlabel("Energy (eV)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    plt.ylabel("Density", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    plt.title('Distribution of LUMO energies of charged and uncharged sites', fontdict={'fontname': 'Comic Sans MS'}, fontsize=12)
+    
+    # Manually create legend lines
+    custom_lines = [plt.Line2D([0], [0], color='blue', lw=1),
+                    plt.Line2D([0], [0], color='yellow', lw=1)]
+    
+    # Add custom legend lines
+    plt.legend(custom_lines, ['site energy 1', 'site energy 2'], fontsize=8, frameon=False, loc='upper left')
+    
+    # Adjust the x-axis limits
+    plt.xlim(min(min(e1), min(e2)), max(max(e1), max(e2)))  # Set the x-axis limits
+    
+    # Save the image if save_filename is provided
+    if save_filename:
+        plt.savefig(save_filename, bbox_inches='tight', dpi=300)
+        print(f"Image saved as {save_filename}")
+        
+    plt.show()
+    
+#............................................................................................................................................#
+    
+    # Plot histograms with smooth curve
+    #plt.hist(e1, edgecolor="black", bins=bins, alpha=0.5, color='blue', label='site energy 1', density=True)
+    #plt.hist(e2, edgecolor="black", bins=bins, alpha=0.5, color='yellow', label='site energy 2', density=True)
+    
+    # Plot smooth curve for site energy 1
+    #kernel_density_estimate_e1 = scipy.stats.gaussian_kde(e1)
+    #e1_values = np.linspace(min(e1), max(e1), 100)
+    #plt.plot(e1_values, kernel_density_estimate_e1(e1_values), color='blue')
+
+    # Plot smooth curve for site energy 2
+    #kernel_density_estimate_e2 = scipy.stats.gaussian_kde(e2)
+    #e2_values = np.linspace(min(e2), max(e2), 100)
+    #plt.plot(e2_values, kernel_density_estimate_e2(e2_values), color='yellow')
+    #plt.xlabel("Energy (eV)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    #plt.ylabel("Density", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    #plt.legend()
+    #plt.show()
+
+#.....................................................................................................................................................#
+
+    # Plot histograms
+    #plt.hist(e1, edgecolor="black", bins=bins, alpha=0.5, color='blue', label='site energy 1')
+    #plt.hist(e2, edgecolor="black", bins=bins, alpha=0.5, color='yellow', label='site energy 2')
+    #plt.xlabel("Energy (eV)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    #plt.ylabel("Time (ps)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    #plt.legend()
+    #plt.savefig('No_site_energy_1.png', dpi=300)
+    #plt.show()
+
+#......................................................................................................................................................#
+
+    # Calculating means
+    mean_e1 = np.mean(e1)
+    mean_e2 = np.mean(e2)
+    print("mean of site energy of 1:", mean_e1)
+    print("mean of site energy of 2:", mean_e2)
+
+    # Calculating standard deviations
+    std_e1 = np.std(e1)
+    std_e2 = np.std(e2)
+    print("standard deviation of site energy of 1:", std_e1)
+    print("standard deviation of site energy of 2:", std_e2)
+
+    # Calculating MSD
+    squared_deviations_e1 = (e1 - mean_e1)**2
+    squared_deviations_e2 = (e2 - mean_e2)**2
+    msd_e1 = np.mean(squared_deviations_e1)
+    msd_e2 = np.mean(squared_deviations_e2)
+    print("Mean Square Deviation (MSD) of e1:", msd_e1)
+    print("Mean Square Deviation (MSD) of e2:", msd_e2)
+    
+#------------------------------------------------------------------------------------------------------------------------------------#
+
+#Function to calculate coupling values
+def calculate_coupling_values(filename, bins=15, save_filename=None):
+    # Load data
+    t, j = np.loadtxt(filename, usecols=(0, 2), unpack=True)
+    
+    plt.figure(figsize=(5, 3))  # Set the figure size here
+    sns.kdeplot(j, color='red', fill=True)
+    plt.xlabel("Coupling (eV)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    plt.ylabel("Density", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    plt.title('Distribution of electronic couplings', fontdict={'fontname': 'Comic Sans MS'}, fontsize=12)
+    # Manually create legend lines
+    custom_lines = [plt.Line2D([0], [0], color='red', lw=1)]
+    
+    # Add custom legend lines
+    plt.legend(custom_lines, ['coupling_values'], fontsize=8, frameon=False, loc='upper left')
+    
+    # Save the image if save_filename is provided
+    if save_filename:
+        plt.savefig(save_filename, bbox_inches='tight', dpi=300)
+        print(f"Image saved as {save_filename}")
+        
+    plt.grid(True)
+    plt.show()
+
+#...............................................................................................................................................#
+
+    # Plot histogram
+    # plt.hist(j, edgecolor="black", bins=bins)
+    # plt.xlabel("Coupling (eV)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    # plt.ylabel("Time (ps)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    # plt.savefig('No_coupling_1.png', dpi=300)
+    # plt.show()
+
+#.................................................................................................................................................#    
+    # Plot linear graph
+    # plt.plot(t, j, 'o', color='blue')
+    # plt.xlabel("Coupling (eV)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    # plt.ylabel("Time (fs)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    # plt.grid(True)
+    # plt.show()
+
+    # Calculating mean
+    mean_j = np.mean(j)
+    print("mean of coupling:", mean_j)
+
+    # Calculating standard deviation
+    std_j = np.std(j)
+    print("standard deviation of coupling:", std_j)
+
+    # Calculating MSD
+    squared_deviations_j = (j - mean_j)**2
+    msd_j = np.mean(squared_deviations_j)
+    print("Mean Square Deviation (MSD) of j:", msd_j)
+
