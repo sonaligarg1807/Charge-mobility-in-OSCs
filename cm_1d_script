@@ -1,0 +1,140 @@
+#Charge mobility in 1-direction
+import numpy as np
+import matplotlib.pyplot as plt
+
+def calculate_slope(t, msd):
+    # Calculate the slope using linear regression
+    slope, intercept = np.polyfit(t, msd, 1)
+    return slope, intercept
+
+def convert_slope_units(slope):
+    # Convert the slope from amu^2/fs to cm^2/sec
+    amu2_to_cm2 = 0.279841e-16  # Conversion factor from amu to kg
+    fs_to_sec = 1e-15              # Conversion factor from fs to sec
+
+    slope_cm2_per_sec = slope * amu2_to_cm2 / fs_to_sec
+
+    return slope_cm2_per_sec
+
+def calculate_charge_mobility(slope_cm2_per_sec):
+    # Constants
+    elementary_charge = 1.602176634e-19  # elementary charge in coulombs
+    boltzmann_constant = 1.380649e-23     # Boltzmann constant in J/K
+    temperature = 300                    # Temperature in Kelvin
+
+    # Calculate charge mobility
+    mobility = (elementary_charge * slope_cm2_per_sec) / (2 * boltzmann_constant * temperature)
+
+    return mobility
+
+def plot_and_calculate_slope(filename, save_filename=None):
+    # Load data from the file
+    t, msd = np.loadtxt(filename, usecols=(0, 7), unpack=True)
+
+    # Plot MSD vs time for the resultant
+    plt.figure(figsize=(5, 3))  # Set the figure size here
+    plt.plot(t, msd, 'o', label='Data Points')
+    plt.xlabel("Time (fs)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    plt.ylabel("MSD (amu^2)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    
+    # Save the image if save_filename is provided
+    if save_filename:
+        plt.savefig(save_filename, bbox_inches='tight', dpi=300)
+        print(f"Image saved as {save_filename}")
+        
+
+    # Calculate the slope using the defined function
+    slope, intercept = calculate_slope(t, msd)
+
+    # Create a line graph with the fitted line
+    plt.plot(t, slope * np.array(t) + intercept, '-', label='Fitted Line', color='black')
+
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+    # Print the slope
+    print("Slope (amu^2/fs):", slope)
+
+    # Convert and print slope in cm^2/sec
+    slope_cm2_per_sec = convert_slope_units(slope)
+    print("Slope (cm^2/sec):", slope_cm2_per_sec)
+
+    # Calculate and print charge mobility
+    mobility = calculate_charge_mobility(slope_cm2_per_sec)
+    print("Charge Mobility:", mobility, "cm^2/(V·s)")
+
+#.............................................................................................................................................#
+
+#function to calculate within a range    
+
+def calculate_slope(t_range, msd_range):
+    # Calculate the slope using linear regression
+    slope, intercept = np.polyfit(t_range, msd_range, 1)
+    return slope, intercept
+
+def convert_slope_units(slope):
+    # Convert the slope from amu^2/fs to cm^2/sec
+    amu2_to_cm2 = 0.279841e-16  # Conversion factor from amu to kg
+    fs_to_sec = 1e-15              # Conversion factor from fs to sec
+
+    slope_cm2_per_sec = slope * amu2_to_cm2 / fs_to_sec
+
+    return slope_cm2_per_sec
+
+def calculate_charge_mobility(slope_cm2_per_sec):
+    # Constants
+    elementary_charge = 1.602176634e-19  # elementary charge in coulombs
+    boltzmann_constant = 1.380649e-23     # Boltzmann constant in J/K
+    temperature = 300                    # Temperature in Kelvin
+
+    # Calculate charge mobility
+    mobility = (elementary_charge * slope_cm2_per_sec) / (2 * boltzmann_constant * temperature)
+
+    return mobility
+
+def cal_range(fname, start_t, end_t, save_filename=None):
+    # Load data from the file
+    t, msd = np.loadtxt(fname, usecols=(0, 7), unpack=True)
+    
+    # Get time range from the user
+    #start_t = float(input("Enter the start time (fs): "))
+    #end_t = float(input("Enter the end time (fs): "))
+    
+    # Filter data based on user-defined time range
+    time_range = (t >= start_t) & (t <= end_t)
+    t_range = t[time_range]
+    msd_range = msd[time_range]
+    
+    # Plot MSD vs time for the resultant
+    plt.figure(figsize=(5, 3))  # Set the figure size here
+    plt.plot(t_range, msd_range, 'o', label='Data Points')
+    plt.xlabel("Time (fs)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    plt.ylabel("MSD (amu^2)", fontdict={'fontname': 'Comic Sans MS'}, fontsize=15)
+    
+    # Save the image if save_filename is provided
+    if save_filename:
+        plt.savefig(save_filename, bbox_inches='tight', dpi=300)
+        print(f"Image saved as {save_filename}")
+    
+    # Calculate the slope using the defined function
+    slope, intercept = calculate_slope(t_range, msd_range)
+
+    # Create a line graph with the fitted line
+    plt.plot(t_range, slope * np.array(t_range) + intercept, '-', label='Fitted Line', color='black')
+
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+    # Print the slope
+    print("Slope (amu^2/fs):", slope)
+
+    # Convert and print slope in cm^2/sec
+    slope_cm2_per_sec = convert_slope_units(slope)
+    print("Slope (cm^2/sec):", slope_cm2_per_sec)
+
+    # Calculate and print charge mobility
+    mobility = calculate_charge_mobility(slope_cm2_per_sec)
+    print("Charge Mobility:", mobility, "cm^2/(V·s)")
+
